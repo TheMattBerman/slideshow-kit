@@ -1,0 +1,13 @@
+{
+  "_schema_version": 1,
+  "format": "numbered_diagnostic",
+  "close_action": "save",
+  "hook_pattern": "observation",
+  "hook_score": 47,
+  "concept_score": 8.7,
+  "claims_personal_fact": false,
+  "concept_id": "concept_3",
+  "brand": "matt",
+  "timestamp": "2026-05-12T14:30:00Z",
+  "save_filter_skipped": false
+}

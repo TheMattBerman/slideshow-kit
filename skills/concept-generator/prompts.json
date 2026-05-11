@@ -1,0 +1,34 @@
+{
+  "concept_generation": {
+    "purpose": "Generate N ranked native social carousel concepts.",
+    "inputs": [
+      "brand_corpus (CorpusBundle as text bundle)",
+      "trend_input (markdown content)",
+      "hook_patterns (HOOK_PATTERNS dict serialized as text)",
+      "concept_patterns (concatenated references/concept-patterns/*.md)",
+      "format_definitions (concatenated references/formats/*.yaml)",
+      "count (default 7)",
+      "mode (interactive | autopilot)"
+    ],
+    "output_format": "Markdown file at runs/<date>/concepts.md",
+    "agent_prompt_template": "You are generating ranked native social carousel concepts for the brand.\n\nInputs (provided in the prompt fill):\n- Brand corpus, trend input, hook patterns, concept patterns, available formats, count, mode.\n\nGenerate exactly {count} concepts ranked top to bottom by concept_score.\n\nEach concept renders as:\n\n## Concept N (rank: N, concept_score: X.X, claims_personal_fact: true|false)\n**Format:** <one of available formats>\n**Close action:** <save|share|comment|soft>\n**Arc:** <one line summary>\n**Visual hook:** <one short sentence; matches the arc; prose, ~12 words>\n**Why this works:** <3-5 sentences>\n\n### Hook variants\n1. (<pattern>, shock <0-60>) \"<hook text>\"\n2. ...\n\nRules:\n- Use >=3 different hook patterns across each concept's variants.\n- Lowercase voice; no em dashes; no AI-tells.\n- claims_personal_fact: true when any fact requires operator confirmation.\n- In MODE=autopilot, apply -2 score penalty when claims_personal_fact is true.\n- Visual hook is one sentence describing the visual through-line (location, time, prop, mood). Must support every slide of this concept, not just the hook.\n- 360 shock-score = sum of six 0-10 axes: emotional_pull, specificity, tension, named, dated, contrarian.\n- Concepts are born for the carousel medium, not translations of newsletter prose.\n- Each concept's format must be one of the available formats.\n\nOutput: a single markdown file with all {count} concept sections."
+  },
+  "scene_elicitation": {
+    "purpose": "Ask operator for concrete specifics before drafting any concept that claims personal facts.",
+    "inputs": [
+      "picked_concept (concept-pick.md content)",
+      "brand_corpus"
+    ],
+    "agent_prompt_template": "The picked concept references operator personal facts (claims_personal_fact: true). Before drafting, elicit the operator's actual specifics. Ask each of these questions; collect answers:\n\n1. Have you actually <claim from concept>? Yes / No.\n2. What is the real number / dollar amount / count?\n3. What is the most recent dated moment when this happened (date or relative)?\n4. Who else is involved (named people, brands, tools)?\n5. What is the punchline beat (the line you would say out loud about this)?\n\nIf operator answers 'no' to question 1, the concept must be reframed in observation framing or the operator must pick a different concept. Do not invent.\n\nReturn the operator's answers as a markdown bullet list."
+  },
+  "script_draft": {
+    "purpose": "Draft the full script.md with frontmatter compliant with v0.7.0 formats.",
+    "inputs": [
+      "picked_concept (concept-pick.md content)",
+      "elicitation_answers (markdown bullets, may be empty)",
+      "format_def (FormatDef from lib.format_registry serialized as text)",
+      "brand_corpus"
+    ],
+    "agent_prompt_template": "Draft a full carousel script using the picked concept and elicitation answers.\n\nInputs:\n- Concept: {picked_concept}\n- Elicitation: {elicitation_answers}\n- Format slot template: {format_def}\n- Brand corpus: {brand_corpus}\n\nWrite a markdown file with this shape:\n\n---\nformat: <format name from concept>\nclose_action: <close action from concept>\n---\n\n# <ROLE matching first slot's aliases>\n<body matching slot's word_count_range>\n\n# <next ROLE>\n<body>\n\n... (one heading per slide; variable-count slots get N headings as needed)\n\n# <last ROLE, typically CTA>\n<close body containing exactly one close_action vocabulary group unless soft>\n\nRules:\n- Heading aliases must match the slot's aliases list. Use the first alias by default.\n- Word counts must respect each slot's word_count_range.\n- Each body slide must contain at least ONE save-worthy specific: number, date, named framework, quote, or tactical aside.\n- Close slide must contain exactly one primary action verb matching close_action unless close_action is soft.\n- Never combine save/share/comment in the close slide. Pick one action only.\n- Close examples: save: \"save this for your next draft.\" share: \"send this to the teammate writing tomorrow's post.\" comment: \"comment with the slide you would cut first.\" soft: \"that is the whole trap.\"\n- No em dashes anywhere. No 'not X, it's Y' patterns. No engineering jargon (deprecated, leverage, optimize, iterate).\n- Lowercase prose. Single-claim hooks. Dated specifics. Named frameworks where possible.\n- If elicitation answers are present, use the operator's actual numbers/dates/names. Do not invent.\n- If a visual_hook is supplied, ensure script copy is consistent with the visual hook (don't claim italian street if visual is \"home office at night\").\n\nOutput: the complete script.md content, frontmatter included."
+  }
+}

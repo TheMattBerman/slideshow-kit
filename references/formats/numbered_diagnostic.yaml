@@ -1,0 +1,22 @@
+name: numbered_diagnostic
+description: >
+  Numbered diagnostic carousel. Hook claim, then N enumerated tells/items/reasons
+  (2-8), a fix slide, and a CTA. Use for "the N tells of X", "5 reasons your Y is broken".
+default_close_action: save
+slots:
+  - role: HOOK
+    count: 1
+    word_count_range: [6, 15]
+    aliases: [HOOK, COVER]
+  - role: ITEM
+    count_range: [2, 8]
+    word_count_range: [15, 50]
+    aliases: [ITEM, TELL, NUMBER, STEP, POINT, RULE, REASON]
+  - role: FIX
+    count: 1
+    word_count_range: [15, 50]
+    aliases: [FIX, RESOLUTION, ANSWER, ANTIDOTE]
+  - role: CTA
+    count: 1
+    word_count_range: [10, 50]
+    aliases: [CTA, CLOSE, ACTION]

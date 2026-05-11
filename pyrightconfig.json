@@ -1,0 +1,10 @@
+{
+  "include": ["lib", "scripts", "skills", "tests", "evals"],
+  "extraPaths": ["."],
+  "pythonVersion": "3.10",
+  "reportMissingImports": "error",
+  "reportMissingTypeStubs": "none",
+  "executionEnvironments": [
+    {"root": ".", "extraPaths": ["."]}
+  ]
+}

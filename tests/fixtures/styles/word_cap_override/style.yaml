@@ -1,0 +1,4 @@
+word_count_override:
+  HOOK: [3, 8]
+  ITEM: [6, 12]
+  CTA: [3, 6]

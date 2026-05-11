@@ -1,0 +1,22 @@
+name: process_reveal
+description: >
+  Step-by-step process carousel. Hook + N steps (3-7) + outcome + CTA. Use for
+  "how i did X in N minutes" type pieces.
+default_close_action: save
+slots:
+  - role: HOOK
+    count: 1
+    word_count_range: [6, 15]
+    aliases: [HOOK, COVER]
+  - role: STEP
+    count_range: [3, 7]
+    word_count_range: [15, 50]
+    aliases: [STEP, PHASE, MOVE, BEAT]
+  - role: OUTCOME
+    count: 1
+    word_count_range: [15, 50]
+    aliases: [OUTCOME, RESULT, AFTER]
+  - role: CTA
+    count: 1
+    word_count_range: [10, 50]
+    aliases: [CTA, CLOSE, ACTION]

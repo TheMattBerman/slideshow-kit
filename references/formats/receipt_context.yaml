@@ -1,0 +1,26 @@
+name: receipt_context
+description: >
+  Quote-then-react format. Lift a screenshot, quote, or external receipt; break
+  it down; layer your context; close with a CTA. Use for reactions and teardowns.
+default_close_action: comment
+slots:
+  - role: HOOK
+    count: 1
+    word_count_range: [6, 15]
+    aliases: [HOOK, COVER]
+  - role: RECEIPT
+    count: 1
+    word_count_range: [10, 60]
+    aliases: [RECEIPT, QUOTE, SCREENSHOT, EXHIBIT]
+  - role: BREAKDOWN
+    count: 1
+    word_count_range: [15, 50]
+    aliases: [BREAKDOWN, ANALYSIS, READING]
+  - role: CONTEXT
+    count: 1
+    word_count_range: [15, 50]
+    aliases: [CONTEXT, BACKGROUND, FRAME]
+  - role: CTA
+    count: 1
+    word_count_range: [10, 50]
+    aliases: [CTA, CLOSE, ACTION]

@@ -1,0 +1,30 @@
+name: narrative
+description: >
+  Story-driven case study carousel. Default format. Use for "here's what
+  happened" pieces with a hook claim, reveal, setup, examples, outcome, and CTA.
+default_close_action: save
+slots:
+  - role: HOOK
+    count: 1
+    word_count_range: [6, 15]
+    aliases: [HOOK, COVER]
+  - role: REVEAL
+    count: 1
+    word_count_range: [15, 50]
+    aliases: [REVEAL]
+  - role: SETUP
+    count: 1
+    word_count_range: [15, 50]
+    aliases: [SETUP, CONTEXT]
+  - role: EXAMPLES
+    count: 1
+    word_count_range: [15, 50]
+    aliases: [EXAMPLES, RECEIPTS, PROOF]
+  - role: OUTCOME
+    count: 1
+    word_count_range: [15, 50]
+    aliases: [OUTCOME, RESULT]
+  - role: CTA
+    count: 1
+    word_count_range: [10, 50]
+    aliases: [CTA, CLOSE, ACTION]

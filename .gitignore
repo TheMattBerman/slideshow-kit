@@ -1,0 +1,28 @@
+# Secrets
+.env
+.env.local
+*.key
+
+# Local runs / outputs
+runs/
+output/
+*.log
+
+# Test artifacts
+.pytest_cache/
+__pycache__/
+*.pyc
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# User brand workspaces (created by init_brand.sh — user data, never committed)
+brands/
+
+# Git worktrees
+.worktrees/

@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-05-04T07:00:00Z",
+  "lookback_days": 7,
+  "pillars": ["AI agents", "solo operators", "leverage"],
+  "trends": [
+    {
+      "id": "t-001",
+      "title": "Solo operators replacing $10k/mo roles with agents",
+      "summary": "Indie hackers reporting 3-5x leverage from agent-driven workflows; replaces hires for content, prospecting, ops.",
+      "sources": [
+        {"platform": "x", "url": "https://x.com/example/status/1", "engagement": 4200},
+        {"platform": "reddit", "url": "https://reddit.com/r/example/1", "engagement": 1100}
+      ],
+      "score": 0.92
+    },
+    {
+      "id": "t-002",
+      "title": "Postiz multi-platform scheduling crosses 100k users",
+      "summary": "Open-source social scheduler hits a milestone; agency-tier pricing announced.",
+      "sources": [
+        {"platform": "hn", "url": "https://news.ycombinator.com/item?id=1", "engagement": 380}
+      ],
+      "score": 0.74
+    },
+    {
+      "id": "t-003",
+      "title": "Carousel feeds outperforming single images on LinkedIn 2x",
+      "summary": "LinkedIn algo update favors document/carousel posts; saves are the new like.",
+      "sources": [
+        {"platform": "linkedin", "url": "https://linkedin.com/posts/example", "engagement": 2200}
+      ],
+      "score": 0.81
+    }
+  ]
+}

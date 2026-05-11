@@ -1,0 +1,17 @@
+{
+  "brand": "fixture",
+  "mode": "draft",
+  "lookback_days": 7,
+  "posts_per_day": 1,
+  "formats": ["branded", "social-native"],
+  "checkin": {
+    "channel": "agent",
+    "timeout_minutes": 30,
+    "telegram_chat_id": null
+  },
+  "postiz": {
+    "integration_ids": ["fixture-li-001", "fixture-ig-002"]
+  },
+  "created_on": "2026-05-04",
+  "runs_history": 0
+}

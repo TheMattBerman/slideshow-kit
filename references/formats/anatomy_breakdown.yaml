@@ -1,0 +1,26 @@
+name: anatomy_breakdown
+description: >
+  Anatomy / teardown of a winning artifact. Hook, N samples (2-4) with analyses,
+  pattern synthesis, and CTA. Use for "anatomy of a viral X".
+default_close_action: save
+slots:
+  - role: HOOK
+    count: 1
+    word_count_range: [6, 15]
+    aliases: [HOOK, COVER]
+  - role: SAMPLE
+    count_range: [2, 4]
+    word_count_range: [15, 60]
+    aliases: [SAMPLE, EXAMPLE, EXHIBIT]
+  - role: ANALYSIS
+    count: 1
+    word_count_range: [20, 60]
+    aliases: [ANALYSIS, BREAKDOWN]
+  - role: PATTERNS
+    count: 1
+    word_count_range: [15, 50]
+    aliases: [PATTERNS, TAKEAWAYS, RULES]
+  - role: CTA
+    count: 1
+    word_count_range: [10, 50]
+    aliases: [CTA, CLOSE, ACTION]

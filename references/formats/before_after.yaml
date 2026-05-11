@@ -1,0 +1,26 @@
+name: before_after
+description: >
+  Transformation format. Hook, before state, after state, the delta (what changed),
+  and CTA. Use for results comparisons and case-study transformations.
+default_close_action: save
+slots:
+  - role: HOOK
+    count: 1
+    word_count_range: [6, 15]
+    aliases: [HOOK, COVER]
+  - role: BEFORE
+    count: 1
+    word_count_range: [15, 50]
+    aliases: [BEFORE, OLD, WAS]
+  - role: AFTER
+    count: 1
+    word_count_range: [15, 50]
+    aliases: [AFTER, NEW, NOW]
+  - role: DELTA
+    count: 1
+    word_count_range: [15, 50]
+    aliases: [DELTA, CHANGE, DIFFERENCE]
+  - role: CTA
+    count: 1
+    word_count_range: [10, 50]
+    aliases: [CTA, CLOSE, ACTION]

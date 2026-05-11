@@ -1,0 +1,20 @@
+{
+  "name": "slideshow-kit",
+  "version": "0.1.0",
+  "description": "Daily brand-DNA-driven social autopilot kit",
+  "extraDirs": [
+    "skills",
+    "workflows",
+    "references",
+    "scripts"
+  ],
+  "env": {
+    "OPENAI_API_KEY": "<your-openai-key>",
+    "POSTIZ_API_KEY": "<set-by-postiz-login>",
+    "TELEGRAM_BOT_TOKEN": "<optional, see references/telegram-setup.md>",
+    "SLIDESHOW_BRAND": "<default-brand-slug-or-omit>"
+  },
+  "requires": [
+    "last30"
+  ]
+}

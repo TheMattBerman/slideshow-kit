@@ -1,0 +1,27 @@
+name: counter_narrative
+description: >
+  Contrarian frame on industry orthodoxy. Hook + the dominant narrative (the
+  quote) + a question + your real answer + CTA. Use for "industry says X; here's
+  why X is wrong".
+default_close_action: comment
+slots:
+  - role: HOOK
+    count: 1
+    word_count_range: [6, 15]
+    aliases: [HOOK, COVER]
+  - role: THE_QUOTE
+    count: 1
+    word_count_range: [10, 50]
+    aliases: [THE_QUOTE, QUOTE, ORTHODOXY]
+  - role: THE_QUESTION
+    count: 1
+    word_count_range: [10, 30]
+    aliases: [THE_QUESTION, QUESTION, BUT]
+  - role: THE_REAL_ANSWER
+    count: 1
+    word_count_range: [20, 60]
+    aliases: [THE_REAL_ANSWER, ANSWER, ACTUALLY]
+  - role: CTA
+    count: 1
+    word_count_range: [10, 50]
+    aliases: [CTA, CLOSE, ACTION]

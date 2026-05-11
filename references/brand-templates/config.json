@@ -1,0 +1,18 @@
+{
+  "brand": "<slug>",
+  "mode": "draft",
+  "lookback_days": 7,
+  "posts_per_day": 1,
+  "default_style": "social_native",
+  "styles_per_day": ["social_native"],
+  "checkin": {
+    "channel": "agent",
+    "timeout_minutes": 30,
+    "telegram_chat_id": null
+  },
+  "postiz": {
+    "integration_ids": []
+  },
+  "created_on": "<YYYY-MM-DD>",
+  "runs_history": 0
+}
