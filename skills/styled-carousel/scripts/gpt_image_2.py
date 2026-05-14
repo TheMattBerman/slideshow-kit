@@ -80,8 +80,14 @@ def _generate_via_edits(
     quality: str,
     reference_images: List[str],
     n: int = 1,
+    mask: Optional[str] = None,
 ) -> List[str]:
     """POST to /v1/images/edits via curl multipart with one or more reference images.
+
+    When `mask` is provided, only the masked region of the first reference image is
+    redrawn (surgical inpaint); everything outside the mask is pixel-preserved.
+    When `mask` is None, the model has full recomposition freedom — refs are
+    treated as ingredients, not a locked canvas.
 
     Returns a list of saved file paths. When n>1, paths are derived from output_path
     by inserting -N before the extension (e.g. slide.png -> slide-1.png, slide-2.png).
@@ -98,6 +104,8 @@ def _generate_via_edits(
         cmd[2:2] = ["--cacert", certifi.where()]
     for ref in reference_images:
         cmd += ["-F", f"image[]=@{ref}"]
+    if mask is not None:
+        cmd += ["-F", f"mask=@{mask}"]
     cmd += [
         "-F", f"prompt={prompt}",
         "-F", f"size={size}",
@@ -147,15 +155,23 @@ def generate(
     quality: str = "high",
     reference_images: Optional[List[str]] = None,
     n: int = 1,
+    mask: Optional[str] = None,
 ) -> dict:
     """Generate one or more images. Returns metadata dict.
 
     When `reference_images` is non-empty (and not dry-run), uses
-    POST /v1/images/edits via curl multipart for character-likeness preservation.
-    Otherwise uses the JSON /v1/images/generations path (n must be 1 on that path).
+    POST /v1/images/edits via curl multipart. With `mask`, the edit is surgical:
+    only the masked region of the first reference image is redrawn. Without
+    `mask`, the model has full recomposition freedom (Stage B design composition).
+    Otherwise uses the JSON /v1/images/generations path (n must be 1 on that path,
+    and `mask` is not applicable there).
     """
     os.makedirs(os.path.dirname(output_path) or ".", exist_ok=True)
     refs = list(reference_images) if reference_images else []
+
+    if mask is not None and not refs:
+        print("[FAIL] mask requires at least one reference image", file=sys.stderr)
+        sys.exit(1)
 
     if dry_run:
         prompt_path = output_path.replace(".png", ".prompt.txt")
@@ -163,12 +179,15 @@ def generate(
             f.write(f"size: {size}\nmodel: {MODEL}\nquality: {quality}\nn: {n}\n")
             if refs:
                 f.write(f"reference_images: {refs}\n")
+            if mask:
+                f.write(f"mask: {mask}\n")
             f.write(f"\n{prompt}\n")
         return {
             "dry_run": True,
             "prompt_path": prompt_path,
             "size": size,
             "reference_images": refs,
+            "mask": mask,
             "n": n,
         }
 
@@ -185,6 +204,7 @@ def generate(
             quality=quality,
             reference_images=refs,
             n=n,
+            mask=mask,
         )
         return {
             "dry_run": False,
@@ -195,6 +215,8 @@ def generate(
             "output_paths": paths,
             "endpoint": "edits",
             "reference_images": refs,
+            "mask": mask,
+            "mode": "surgical" if mask else "composition",
             "n": n,
         }
 
@@ -270,7 +292,27 @@ def main():
         "--reference-image",
         action="append",
         default=[],
-        help="Path to a reference image for character likeness. Repeat for multiple.",
+        help="Path to a reference image. Repeat for multiple. The first ref is the base "
+             "image for surgical edits; additional refs are treated as design ingredients.",
+    )
+    ap.add_argument(
+        "--mask",
+        default=None,
+        help="Path to a mask image (PNG with alpha). White/transparent pixels mark the "
+             "region to redraw; black pixels are preserved. Requires at least one "
+             "--reference-image. Use for Stage C surgical edits where the defect is "
+             "spatially scoped (e.g., just the logo lockup area).",
+    )
+    ap.add_argument(
+        "--final-size",
+        default=None,
+        help="Optional final delivery dimensions as WxH (e.g. 1080x1350). After "
+             "generation completes, the output is rescaled via aspect-preserving "
+             "Lanczos resize to these exact dimensions. Use when you generate at "
+             "the model's native div-by-16 size (e.g. 1088x1360 for 4:5) but want "
+             "to deliver at the platform spec size (e.g. 1080x1350). This is a "
+             "lossless aspect-preserving rescale ONLY when --size and --final-size "
+             "share the same aspect ratio. No crop, no content edit, no compositing.",
     )
     args = ap.parse_args()
 
@@ -282,7 +324,39 @@ def main():
         dry_run=args.dry_run,
         quality=args.quality,
         reference_images=args.reference_image,
+        mask=args.mask,
     )
+
+    if args.final_size and not args.dry_run:
+        try:
+            target_w, target_h = (int(v) for v in args.final_size.lower().split("x"))
+        except ValueError:
+            print(f"[FAIL] --final-size must be WxH (e.g. 1080x1350), got: {args.final_size}", file=sys.stderr)
+            sys.exit(1)
+        try:
+            from PIL import Image  # local import; PIL only needed when final-size is used
+        except ImportError:
+            print("[FAIL] --final-size requires Pillow (pip install Pillow)", file=sys.stderr)
+            sys.exit(1)
+        # Aspect-preservation check
+        native_w, native_h = (int(v) for v in args.size.lower().split("x"))
+        native_aspect = native_w / native_h
+        target_aspect = target_w / target_h
+        if abs(native_aspect - target_aspect) > 0.005:
+            print(
+                f"[WARN] aspect mismatch: --size {args.size} is {native_aspect:.4f}, "
+                f"--final-size {args.final_size} is {target_aspect:.4f}. Resize will distort.",
+                file=sys.stderr,
+            )
+        out = args.output
+        paths = result.get("output_paths") or ([out] if result.get("output_path") else [])
+        for p in paths:
+            img = Image.open(p).convert("RGB")
+            img = img.resize((target_w, target_h), Image.LANCZOS)
+            img.save(p, "PNG", optimize=True)
+        result["final_size"] = args.final_size
+        result["resize_aspect_delta"] = round(abs(native_aspect - target_aspect), 4)
+
     print(json.dumps(result, indent=2))
 
 
